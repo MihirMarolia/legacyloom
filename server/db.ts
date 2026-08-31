@@ -90,3 +90,40 @@ export async function getUserByOpenId(openId: string) {
 }
 
 // TODO: add feature queries here as your schema grows.
+
+
+import { and, desc } from "drizzle-orm";
+import { InsertPlan, Plan, plans, reminderPreferences } from "../drizzle/schema";
+
+export async function listPlansForUser(userId: number): Promise<Plan[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(plans).where(eq(plans.userId, userId)).orderBy(desc(plans.updatedAt));
+}
+
+export async function upsertPlanProgress(userId: number, input: Omit<InsertPlan, "userId"> & { id?: number }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  if (input.id) {
+    const owned = await db.select().from(plans).where(and(eq(plans.id, input.id), eq(plans.userId, userId))).limit(1);
+    if (!owned[0]) throw new Error("Plan not found");
+    await db.update(plans).set({ kind: input.kind, status: input.status, progress: input.progress, suitabilityAcknowledged: input.suitabilityAcknowledged, answersJson: input.answersJson }).where(eq(plans.id, input.id));
+    return { ...owned[0], ...input, userId };
+  }
+  const result = await db.insert(plans).values({ ...input, userId });
+  return { id: Number(result[0].insertId), ...input, userId };
+}
+
+export async function getReminderPreferences(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(reminderPreferences).where(eq(reminderPreferences.userId, userId)).limit(1);
+  return result[0];
+}
+
+export async function saveReminderPreferences(userId: number, input: Pick<typeof reminderPreferences.$inferInsert, "unfinishedDocuments" | "signingSteps" | "periodicReviews">) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.insert(reminderPreferences).values({ userId, ...input }).onDuplicateKeyUpdate({ set: input });
+  return getReminderPreferences(userId);
+}

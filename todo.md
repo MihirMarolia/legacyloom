@@ -1,0 +1,32 @@
+# Project TODO
+
+- [x] Public nonprofit landing experience with Ontario scope, free/pay-what-you-can access, privacy commitments, and software-not-legal-advice disclosure
+- [x] International Typographic Style visual system with white canvas, red square accents, black sans-serif typography, asymmetric grid, divider lines, and generous negative space
+- [x] Secure account entry and authenticated personal dashboard
+- [x] Explicit Ontario eligibility and suitability screener
+- [x] Guided Ontario will flow with plain-language questions, saved progress, completeness checks, preview/download, and signing/witness instructions
+- [x] Guided Ontario prenuptial-agreement flow with individual/couple intake, financial-disclosure prompts, collaborative sharing, and independent-legal-advice checkpoints
+- [ ] Secure document vault for drafts and final versions
+- [ ] Document version history and life-change update flow
+- [ ] Professional-review request flow for out-of-scope or complex situations
+- [ ] Bilingual-ready and accessible content structure
+- [ ] Admin foundations for approved legal templates and educational content
+- [ ] Admin review-queue oversight
+- [ ] Anonymized nonprofit impact metrics
+- [ ] Optional one-time donation flow with transparent checkout and confirmation
+- [ ] Opt-in reminders for unfinished documents, signing steps, and periodic reviews after major life changes
+- [x] Privacy-conscious data model and consent/status tracking
+- [x] Vitest coverage for core flows and validation
+- [x] Responsive visual verification across desktop and mobile breakpoints
+- [x] Document legal-safety limitations and identify required qualified Ontario legal review before production use
+- [x] Wire secure login/account entry into the UI and protect the personal dashboard behind authenticated routing
+- [x] Register the planner route and fix screener logic so all required Ontario suitability acknowledgements are enforced
+- [ ] Implement persistent saved progress for will and prenup flows using schema, database helpers, and tRPC procedures
+- [ ] Add will completeness checks plus preview/download and fuller Ontario signing/witness guidance
+- [ ] Implement prenup collaboration/invite state and tracked independent-legal-advice checkpoints
+- [ ] Add privacy/consent data model fields and APIs for reminder opt-in/status tracking
+- [ ] Add Vitest coverage for screener validation, authenticated access, and core will/prenup flow logic
+- [x] Wire the public Log in and primary account-entry CTA buttons to the scaffolded startLogin/auth flow
+- [x] Run and document mobile visual verification for the landing page, dashboard, and vault, then fix any responsive issues found
+- [x] Wire the remaining public account-entry CTA, including the bottom Create your free account button, to startLogin()
+- [x] Document mobile verification results for landing, dashboard, and vault, and finalize any responsive fixes identified during review
