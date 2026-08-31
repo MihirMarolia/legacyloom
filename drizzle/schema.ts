@@ -77,3 +77,24 @@ export type DocumentVersion = typeof documentVersions.$inferSelect;
 export type ReminderPreference = typeof reminderPreferences.$inferSelect;
 export type ReviewRequest = typeof reviewRequests.$inferSelect;
 export type Donation = typeof donations.$inferSelect;
+
+
+export const legalTemplates = mysqlTable("legalTemplates", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 180 }).notNull(),
+  kind: mysqlEnum("kind", ["will", "prenup"]).notNull(),
+  status: mysqlEnum("status", ["draft", "review", "approved", "archived"]).default("draft").notNull(),
+  version: int("version").default(1).notNull(),
+  body: text("body"),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const educationalContent = mysqlTable("educationalContent", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 180 }).notNull(),
+  slug: varchar("slug", { length: 180 }).notNull().unique(),
+  locale: varchar("locale", { length: 10 }).default("en").notNull(),
+  status: mysqlEnum("status", ["draft", "published", "archived"]).default("draft").notNull(),
+  body: text("body"),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});

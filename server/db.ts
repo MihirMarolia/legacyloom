@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, donations, educationalContent, legalTemplates, plans, reviewRequests, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -93,7 +93,7 @@ export async function getUserByOpenId(openId: string) {
 
 
 import { and, desc } from "drizzle-orm";
-import { InsertPlan, Plan, plans, reminderPreferences } from "../drizzle/schema";
+import { InsertPlan, Plan, reminderPreferences } from "../drizzle/schema";
 
 export async function listPlansForUser(userId: number): Promise<Plan[]> {
   const db = await getDb();
@@ -126,4 +126,79 @@ export async function saveReminderPreferences(userId: number, input: Pick<typeof
   if (!db) throw new Error("Database unavailable");
   await db.insert(reminderPreferences).values({ userId, ...input }).onDuplicateKeyUpdate({ set: input });
   return getReminderPreferences(userId);
+}
+
+
+
+export async function createReviewRequest(userId: number, planId: number, reason: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const result = await db.insert(reviewRequests).values({ userId, planId, reason, status: "queued" });
+  return { id: Number(result[0].insertId), userId, planId, reason, status: "queued" as const };
+}
+
+
+export async function listReviewRequests() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(reviewRequests).limit(100);
+}
+
+export async function updateReviewRequestStatus(id: number, status: "queued" | "assigned" | "completed" | "closed") {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.update(reviewRequests).set({ status }).where(eq(reviewRequests.id, id));
+  return { id, status };
+}
+
+export async function getImpactMetrics() {
+  const db = await getDb();
+  if (!db) return { plansStarted: 0, plansCompleted: 0, reviewAccessProvided: 0 };
+  const [started, completed, reviewed] = await Promise.all([
+    db.select({ count: sql<number>`count(*)` }).from(plans),
+    db.select({ count: sql<number>`count(*)` }).from(plans).where(eq(plans.status, "complete")),
+    db.select({ count: sql<number>`count(*)` }).from(reviewRequests).where(eq(reviewRequests.status, "completed")),
+  ]);
+  return { plansStarted: Number(started[0]?.count || 0), plansCompleted: Number(completed[0]?.count || 0), reviewAccessProvided: Number(reviewed[0]?.count || 0) };
+}
+
+export async function recordDonation(userId: number | null, stripePaymentIntentId: string | null) {
+  const db = await getDb();
+  if (!db || !stripePaymentIntentId) return;
+  await db.insert(donations).values({ userId, stripePaymentIntentId }).onDuplicateKeyUpdate({ set: { userId } });
+}
+
+
+export async function listLegalTemplates() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(legalTemplates).limit(100);
+}
+
+export async function saveLegalTemplate(input: { id?: number; title: string; kind: "will" | "prenup"; status: "draft" | "review" | "approved" | "archived"; body?: string }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  if (input.id) {
+    await db.update(legalTemplates).set({ title: input.title, kind: input.kind, status: input.status, body: input.body }).where(eq(legalTemplates.id, input.id));
+    return { id: input.id };
+  }
+  const result = await db.insert(legalTemplates).values(input);
+  return { id: Number(result[0].insertId) };
+}
+
+export async function listEducationalContent() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(educationalContent).limit(100);
+}
+
+export async function saveEducationalContent(input: { id?: number; title: string; slug: string; locale: string; status: "draft" | "published" | "archived"; body?: string }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  if (input.id) {
+    await db.update(educationalContent).set({ title: input.title, slug: input.slug, locale: input.locale, status: input.status, body: input.body }).where(eq(educationalContent.id, input.id));
+    return { id: input.id };
+  }
+  const result = await db.insert(educationalContent).values(input);
+  return { id: Number(result[0].insertId) };
 }

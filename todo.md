@@ -10,10 +10,10 @@
 - [ ] Document version history and life-change update flow
 - [ ] Professional-review request flow for out-of-scope or complex situations
 - [ ] Bilingual-ready and accessible content structure
-- [ ] Admin foundations for approved legal templates and educational content
-- [ ] Admin review-queue oversight
-- [ ] Anonymized nonprofit impact metrics
-- [ ] Optional one-time donation flow with transparent checkout and confirmation
+- [x] Admin foundations for approved legal templates and educational content
+- [x] Admin review-queue oversight
+- [x] Anonymized nonprofit impact metrics
+- [x] Optional one-time donation flow with transparent checkout and confirmation
 - [ ] Opt-in reminders for unfinished documents, signing steps, and periodic reviews after major life changes
 - [x] Privacy-conscious data model and consent/status tracking
 - [x] Vitest coverage for core flows and validation
@@ -24,9 +24,19 @@
 - [ ] Implement persistent saved progress for will and prenup flows using schema, database helpers, and tRPC procedures
 - [ ] Add will completeness checks plus preview/download and fuller Ontario signing/witness guidance
 - [ ] Implement prenup collaboration/invite state and tracked independent-legal-advice checkpoints
-- [ ] Add privacy/consent data model fields and APIs for reminder opt-in/status tracking
+- [x] Add privacy/consent data model fields and APIs for reminder opt-in/status tracking
 - [ ] Add Vitest coverage for screener validation, authenticated access, and core will/prenup flow logic
 - [x] Wire the public Log in and primary account-entry CTA buttons to the scaffolded startLogin/auth flow
 - [x] Run and document mobile visual verification for the landing page, dashboard, and vault, then fix any responsive issues found
 - [x] Wire the remaining public account-entry CTA, including the bottom Create your free account button, to startLogin()
 - [x] Document mobile verification results for landing, dashboard, and vault, and finalize any responsive fixes identified during review
+- [x] Implement real admin CRUD/data procedures for approved legal templates and educational content, backed by persisted records and admin-only access
+- [x] Add admin review-queue listing/update procedures and wire the operations UI to real review-request data
+- [x] Build backend aggregation for anonymized impact metrics and replace hardcoded metrics with live admin-facing queries
+- [x] Persist donation records and Stripe identifiers on webhook completion, verify donation success from server-side data, and adapt checkout for unauthenticated users
+- [ ] Add admin delete/archive actions and real create/edit approval UI for legal templates and educational content, backed by existing admin procedures
+- [x] Wire admin review queue controls to reviews.updateStatus so operators can act on live requests
+- [x] Add a server-side donation confirmation lookup that checks persisted records or Stripe completion before showing success
+- [x] Fix the Operations review-queue action so labels match live status transitions and include loading/error states
+- [x] Add a focused test or shared validation for admin review status transitions
+- [x] Add a visible Updating… state to the Operations review action while reviews.updateStatus is pending

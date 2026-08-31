@@ -8,6 +8,8 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Planner from "./pages/Planner";
 import Vault from "./pages/Vault";
+import Operations from "./pages/Operations";
+import Donate from "./pages/Donate";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -17,6 +19,8 @@ function Router() {
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/planner"} component={Planner} />
       <Route path={"/vault"} component={Vault} />
+      <Route path={"/operations"} component={Operations} />
+      <Route path={"/donate"} component={Donate} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
